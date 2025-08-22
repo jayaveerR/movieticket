@@ -1,12 +1,9 @@
 [package]
-name = "MessageBoard"
+name = "Tickets"
 version = "1.0.0"
-authors = []
 
 [addresses]
-message_board_addr = "_"
+tickets_addr = "6976ec3aa37858aad990b899d5c17ad827b66cab91ccdb7256c12083313deb40"
 
 [dependencies]
-AptosFramework = { git = "https://github.com/aptos-labs/aptos-framework.git", rev = "mainnet", subdir = "aptos-framework" }
-
-[dev-dependencies]
+AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "testnet" }
