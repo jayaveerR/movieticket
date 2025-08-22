@@ -1,7 +1,7 @@
 "use client";
 
 import { Star } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 const movies = [
   {
@@ -67,25 +67,25 @@ const movies = [
 ];
 
 export default function MovieGrid() {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const handleMovieClick = (movieId) => {
     if (movieId === 1) {
-      navigate("/previewcontainer/mowgli");
+      router.push("/previewcontainer/mowgli");
     } else if (movieId === 5) {
-      navigate("/previewcontainer/movies");
+      router.push("/previewcontainer/movies");
     }
     else if (movieId === 2) {
-      navigate("/previewcontainer/narasimha");
+      router.push("/previewcontainer/narasimha");
     } 
     else if (movieId === 3) {
-      navigate("/previewcontainer/paradise");
+      router.push("/previewcontainer/paradise");
     }
     else if (movieId === 4) {
-      navigate("/previewcontainer/ramayana");
+      router.push("/previewcontainer/ramayana");
     }
     else if (movieId === 6) {
-      navigate("/previewcontainer/merai");
+      router.push("/previewcontainer/merai");
     }
 
 

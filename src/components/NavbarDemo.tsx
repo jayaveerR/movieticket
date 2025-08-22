@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import Masonry from "./Masonry";
 import {
   Navbar,
@@ -64,7 +64,7 @@ export function NavbarDemo() {
               {showDropdown && (
                 <div className="absolute left-0 mt-2 w-40 bg-white border rounded shadow-lg z-50">
                   {["Vijayawada"].map((city) => (
-                    <Link to="/previewcontainer" key={city}>
+                    <Link href="/previewcontainer" key={city}>
                       <div
                         className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
                         onClick={() => {

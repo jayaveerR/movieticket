@@ -5,7 +5,7 @@ import { ReactQueryProvider } from "@/components/ReactQueryProvider";
 import { WalletProvider } from "@/components/WalletProvider";
 import { Toaster } from "@/components/ui/toaster";
 import { WrongNetworkAlert } from "@/components/WrongNetworkAlert";
-import RouterProvider from "@/components/RouterProvider";
+
 
 import "./globals.css";
 
@@ -27,11 +27,9 @@ export default function RootLayout({
       <body>
         <WalletProvider>
           <ReactQueryProvider>
-            <RouterProvider>
-              <div id="root">{children}</div>
+            <div id="root">{children}</div>
               <WrongNetworkAlert />
               <Toaster />
-            </RouterProvider>
           </ReactQueryProvider>
         </WalletProvider>
       </body>

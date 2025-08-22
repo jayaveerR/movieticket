@@ -1,10 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Star, Calendar, Clock, AlertCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-export default function Movies() {   // ✅ renamed export for clarity
+export default function Movies() {
   const [rating] = useState("7.7/10 (192K Votes)");
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter(); // ✅ navigation hook
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -14,12 +16,7 @@ export default function Movies() {   // ✅ renamed export for clarity
   }, []);
 
   const handleBook = () => {
-    const button = document.querySelector(".book-button") as HTMLElement;
-    button.classList.add("scale-95");
-    setTimeout(() => {
-      button.classList.remove("scale-95");
-      alert("Booking functionality would be implemented here!");
-    }, 150);
+    router.push("/mouglicomponent"); // ✅ redirect to Mouglicomponent.tsx
   };
 
   const handleRate = () => {
@@ -194,7 +191,6 @@ export default function Movies() {   // ✅ renamed export for clarity
           </div>
         </div>
       )}
-
     </div>
   );
 }
