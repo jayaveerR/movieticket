@@ -1,19 +1,11 @@
 [package]
-name = "book"
+name = "MovieTicket"
 version = "1.0.0"
-authors = []
+authors = ["Your Name"]
 
 [addresses]
-tickets_addr = "6976ec3aa37858aad990b899d5c17ad827b66cab91ccdb7256c12083313deb40"
+movie_addr = "0x2bf6daf62c9245b66492ce35aa97576a7b2477da75db934e4db24961e2d44856"
 
-[dev-addresses]
-tickets_addr = "6976ec3aa37858aad990b899d5c17ad827b66cab91ccdb7256c12083313deb40"
-
-
-
-[dependencies.AptosFramework]
-git = "https://github.com/aptos-labs/aptos-framework.git"
-rev = "mainnet"
-subdir = "aptos-framework"
-
-[dev-dependencies]
+[dependencies]
+AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "main" }
+AptosTokenObjects = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-token-objects", rev = "main" }

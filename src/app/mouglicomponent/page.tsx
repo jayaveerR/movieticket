@@ -1,5 +1,5 @@
 "use client"
-import Mouglicomponent from "@/components/Mouglicomponent";
+import MovieBooking from "@/components/MovieBooking";
 export default function MougliComponentPage() {
-  return <Mouglicomponent />;
+  return <MovieBooking />;
 }

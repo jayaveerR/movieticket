@@ -1,9 +1,0 @@
-[package]
-name = "Tickets"
-version = "1.0.0"
-
-[addresses]
-tickets_addr = "6976ec3aa37858aad990b899d5c17ad827b66cab91ccdb7256c12083313deb40"
-
-[dependencies]
-AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "testnet" }

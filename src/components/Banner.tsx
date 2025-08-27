@@ -15,7 +15,7 @@ export default function Banner({ message }: { message: string }) {
   return (
     <div className="fixed top-0 left-0 w-full z-50 flex justify-center">
       <div className="bg-blue-600 text-white px-6 py-3 rounded-b-xl shadow-lg text-center font-medium animate-slideDown">
-        {message}
+        {message} hello
       </div>
     </div>
   );

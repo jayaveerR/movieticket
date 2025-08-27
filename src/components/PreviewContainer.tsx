@@ -2,6 +2,8 @@
 
 import { Star } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Mainnav from "./Mainnav";
+
 
 const movies = [
   {
@@ -65,64 +67,53 @@ const movies = [
     img: "https://i.pinimg.com/1200x/ca/c5/9e/cac59e4da04c33082848e1a2cb30c043.jpg",
   },
 ];
-
 export default function MovieGrid() {
   const router = useRouter();
 
-  const handleMovieClick = (movieId) => {
-    if (movieId === 1) {
-      router.push("/previewcontainer/mowgli");
-    } else if (movieId === 5) {
-      router.push("/previewcontainer/movies");
-    }
-    else if (movieId === 2) {
-      router.push("/previewcontainer/narasimha");
-    } 
-    else if (movieId === 3) {
-      router.push("/previewcontainer/paradise");
-    }
-    else if (movieId === 4) {
-      router.push("/previewcontainer/ramayana");
-    }
-    else if (movieId === 6) {
-      router.push("/previewcontainer/merai");
-    }
-
-
+  const handleMovieClick = (movieId: number) => {
+    if (movieId === 1) router.push("/previewcontainer/mowgli");
+    else if (movieId === 2) router.push("/previewcontainer/movies/narasimha");
+    else if (movieId === 3) router.push("/previewcontainer/movies/paradise");
+    else if (movieId === 4) router.push("/previewcontainer/movies/ramayana");
+    else if (movieId === 5) router.push("/previewcontainer/movies/coolie");
+    else if (movieId === 6) router.push("/previewcontainer/movies/merai");
   };
 
   return (
-    <div className="w-full bg-white flex justify-center items-start pt-6">
-      {/* 🔥 Grid with 10 Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-6">
-        {movies.map((movie) => (
-          <div
-            key={movie.id}
-            className="flex flex-col items-center"
-            onClick={() => handleMovieClick(movie.id)}
-          >
-            {/* 🎬 Poster Card */}
-            <div className="relative w-[180px] h-[270px] rounded-xl overflow-hidden shadow-lg cursor-pointer group">
-              <img
-                src={movie.img}
-                alt={movie.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-            </div>
+    <>
+      <Mainnav />
+      {/* 👇 Added pt-24 to push movies below navbar height */}
+      <div className="w-full bg-white flex justify-center items-start pt-24">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+          {movies.map((movie) => (
+            <div
+              key={movie.id}
+              className="flex flex-col items-center"
+              onClick={() => handleMovieClick(movie.id)}
+            >
+              {/* 🎬 Poster Card */}
+              <div className="relative w-[180px] h-[270px] rounded-xl overflow-hidden shadow-lg cursor-pointer group">
+                <img
+                  src={movie.img}
+                  alt={movie.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
 
-            {/* ⬇️ Info OUTSIDE card */}
-            <div className="mt-2 text-center">
-              <h3 className="text-gray-800 font-semibold text-base">
-                {movie.name}
-              </h3>
-              <div className="flex items-center justify-center gap-1 text-yellow-500">
-                <Star className="w-4 h-4 fill-yellow-500" />
-                <span className="text-sm text-gray-700">{movie.rating}</span>
+              {/* ⬇️ Info OUTSIDE card */}
+              <div className="mt-2 text-center">
+                <h3 className="text-gray-800 font-semibold text-base">
+                  {movie.name}
+                </h3>
+                <div className="flex items-center justify-center gap-1 text-yellow-500">
+                  <Star className="w-4 h-4 fill-yellow-500" />
+                  <span className="text-sm text-gray-700">{movie.rating}</span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

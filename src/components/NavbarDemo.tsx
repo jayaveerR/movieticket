@@ -82,7 +82,7 @@ export function NavbarDemo() {
           </div>
 
           <div className="flex items-center gap-4">
-            <NavbarButton variant="primary">Book a call</NavbarButton>
+            <NavbarButton variant="primary">Book Ticket</NavbarButton>
           </div>
         </NavBody>
       </Navbar>

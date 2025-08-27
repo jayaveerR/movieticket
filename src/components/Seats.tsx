@@ -1,141 +1,327 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { connectPetraWallet, sendPayment, mintTicketNFT } from "../utils/wallet"; // 👈 Wallet utils
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
+import Navbarmovie from "./Navbarmovie";
 
-type Seat = {
+// ================= SECTION DATA =================
+interface Section {
+  name: string;
+  apt: number;
+  rows: string[];
+  seatsPerRow: number;
+}
+
+const sections: Section[] = [
+  { name: "Premium BALCONY", apt: 0.2, rows: ["A", "B", "C"], seatsPerRow: 18 },
+  { name: "Premium SOFA", apt: 0.2, rows: ["A", "B", "C", "D"], seatsPerRow: 18 },
+  { name: "Premium FIRST CLASS", apt: 0.2, rows: ["A", "B", "C", "D", "E", "F", "G", "H"], seatsPerRow: 18 },
+  { name: "NonPremium SECOND CLASS", apt: 0.1, rows: ["A", "B", "C", "D"], seatsPerRow: 18 },
+];
+
+// ================= TYPES =================
+interface Seat {
   id: string;
-  booked: boolean;
-};
+  status: "available" | "selected" | "sold";
+  section: string;
+  price: number;
+}
 
-const rows = ["A", "B", "C", "D", "E"];
-const seatsPerRow = 10;
-const seatPrice = 150; // 💰 Price per seat
+// ================= SEAT POPUP =================
+function SeatPopup({
+  onClose,
+  setSeatLimit,
+  seatLimit,
+}: {
+  onClose: () => void;
+  setSeatLimit: (n: number) => void;
+  seatLimit: number;
+}) {
+  const seatImages = [
+    "https://i.pinimg.com/1200x/d3/42/fb/d342fbd25901b9b2427c46c4d3b2d653.jpg", // cycle
+    "https://i.pinimg.com/1200x/0e/e3/46/0ee34603488d70a9159f55aeb0a2ff67.jpg", // bike
+    "https://i.pinimg.com/736x/d5/70/e1/d570e11f367af2884eeed4318244cf6d.jpg", // auto
+    "https://i.pinimg.com/736x/bd/2d/4f/bd2d4f06db84582ed5926508e5cd2223.jpg", // car
+  ];
+  const transportNames = ["Cycle", "Bike", "Auto", "Car"];
+  const seatLimits = [1, 2, 3, 4];
+  const [currentImg, setCurrentImg] = useState(0);
 
-export default function Seats() {
-  const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
-  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  useEffect(() => {
+    const index = seatLimits.indexOf(seatLimit);
+    if (index >= 0) setCurrentImg(index);
+  }, [seatLimit]);
 
-  // Generate seat layout
-  const generateSeats = (): Seat[] => {
-    const layout: Seat[] = [];
-    rows.forEach((row) => {
-      for (let i = 1; i <= seatsPerRow; i++) {
-        layout.push({
-          id: `${row}${i}`,
-          booked: Math.random() < 0.1, // 🔴 Random booked seats
-        });
-      }
-    });
-    return layout;
-  };
-
-  const [seats] = useState<Seat[]>(generateSeats());
-
-  // Handle seat click
-  const toggleSeat = (seat: Seat) => {
-    if (seat.booked) return;
-    setSelectedSeats((prev) =>
-      prev.includes(seat.id)
-        ? prev.filter((s) => s !== seat.id)
-        : [...prev, seat.id]
-    );
-  };
-
-  // 💳 Handle Payment & Mint NFT
-  const handlePayment = async () => {
-    if (!walletAddress) {
-      const address = await connectPetraWallet();
-      setWalletAddress(address);
-    }
-
-    if (walletAddress) {
-      const totalAmount = selectedSeats.length * seatPrice;
-
-      try {
-        // 1️⃣ Send payment to theater/admin wallet
-        const txnHash = await sendPayment(
-          "0x7b2e3a37101c53ae6f73926e7f45b43e5070e9f81cf17ea8214c239a3a34b857", // Replace with your theater wallet
-          totalAmount
-        );
-        alert(`✅ Payment Successful! Transaction: ${txnHash}`);
-
-        // 2️⃣ Mint NFT ticket to user wallet
-        const mintHash = await mintTicketNFT(walletAddress, 101, selectedSeats); // 101 = movieId
-        alert(`🎟 Ticket NFT minted successfully! Transaction: ${mintHash}`);
-      } catch (err: any) {
-        alert(`❌ ${err.message}`);
-      }
-    }
+  const handleTransportChange = (index: number) => {
+    setCurrentImg(index);
+    setSeatLimit(seatLimits[index]);
   };
 
   return (
     <motion.div
-      className="flex flex-col items-center min-h-screen bg-white p-6"
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
     >
-      {/* 🎬 Theater Name */}
-      <h1 className="text-3xl font-extrabold text-red-600 mb-2 text-center tracking-wide">
-        PVR: Ripples, Vijayawada
-      </h1>
-
-      {/* Page Title */}
-      <h2 className="text-xl font-bold mb-6 text-black">Select Your Seats</h2>
-
-      {/* 🎟 Seat Layout */}
-      <div className="flex flex-col gap-4">
-        {rows.map((row) => (
-          <div key={row} className="flex gap-2 justify-center">
-            {seats
-              .filter((s) => s.id.startsWith(row))
-              .map((seat) => {
-                const isSelected = selectedSeats.includes(seat.id);
-                return (
-                  <motion.button
-                    key={seat.id}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => toggleSeat(seat)}
-                    className={`w-10 h-10 rounded-md text-sm font-semibold 
-                      ${
-                        seat.booked
-                          ? "bg-red-500 text-white cursor-not-allowed"
-                          : isSelected
-                          ? "bg-green-500 text-white"
-                          : "bg-gray-300 text-black hover:bg-gray-400"
-                      }`}
-                  >
-                    {seat.id}
-                  </motion.button>
-                );
-              })}
-          </div>
-        ))}
-      </div>
-
-      {/* Booking Summary */}
       <motion.div
-        className="mt-8 w-full max-w-md bg-gray-100 p-4 rounded-xl shadow-md text-center"
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.3, duration: 0.6 }}
+        className="relative max-w-md mx-auto bg-white rounded-xl shadow-lg p-6 text-center"
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.3 }}
       >
-        <h2 className="text-lg font-semibold mb-2 text-black">Booking Summary</h2>
-        <p className="text-black">
-          Selected Seats: {selectedSeats.length > 0 ? selectedSeats.join(", ") : "None"}
-        </p>
-        <p className="text-black">Total: ₹{selectedSeats.length * seatPrice}</p>
-
+        <h2 className="text-lg font-semibold mb-4">How many seats?</h2>
+        <div className="mb-4">
+          <img src={seatImages[currentImg]} alt="transport" className="w-32 h-32 mx-auto object-contain" />
+        </div>
+        <div className="flex justify-center gap-4 mb-4">
+          {transportNames.map((name, index) => (
+            <button
+              key={index}
+              onClick={() => handleTransportChange(index)}
+              className={`text-base font-normal px-2 py-1 border-b-2 transition ${
+                currentImg === index
+                  ? "border-red-500 text-red-500"
+                  : "border-transparent text-gray-700 hover:text-black"
+              }`}
+            >
+              {name}
+            </button>
+          ))}
+        </div>
+        {/* Premium Options */}{" "}
+        <div className="flex justify-between border-t border-gray-200 pt-4 mb-4 text-sm">
+          {" "}
+          <div>
+            {" "}
+            <p className="font-semibold">PREMIUM BALCONY</p> <p className="text-gray-600">₹0.2</p>{" "}
+            <p className="text-yellow-500">FILLING FAST</p>{" "}
+          </div>{" "}
+          <div>
+            {" "}
+            <p className="font-semibold">PREMIUM SOFA</p> <p className="text-gray-600">₹0.2</p>{" "}
+            <p className="text-green-500">AVAILABLE</p>{" "}
+          </div>{" "}
+          <div>
+            {" "}
+            <p className="font-semibold">PREMIUM FIRST CLASS</p> <p className="text-gray-600">₹0.2</p>{" "}
+            <p className="text-green-500">AVAILABLE</p>{" "}
+          </div>{" "}
+        </div>
         <button
-          className="mt-4 w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
-          disabled={selectedSeats.length === 0}
-          onClick={handlePayment}
+          onClick={onClose}
+          className="w-full bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition"
         >
-          Pay with Wallet
+          Select Seats
         </button>
       </motion.div>
     </motion.div>
+  );
+}
+
+// ================= MAIN COMPONENT =================
+export default function BookingFlow() {
+  const router = useRouter();
+  const [seats, setSeats] = useState<Record<string, Seat[]>>({});
+  const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
+  const [showAlert, setShowAlert] = useState<string | null>(null);
+  const [showPopup, setShowPopup] = useState(true);
+  const [seatLimit, setSeatLimit] = useState(1);
+
+  // init seats with random sold
+  useEffect(() => {
+    const generatedSeats: Record<string, Seat[]> = {};
+    sections.forEach((section) => {
+      generatedSeats[section.name] = section.rows.flatMap((row) =>
+        Array.from({ length: section.seatsPerRow }, (_, i) => {
+          const seatId = `${row}${i + 1}`;
+          const isSold = Math.random() < 0.2; // 20% random sold
+          return {
+            id: seatId,
+            status: isSold ? "sold" : "available",
+            section: section.name,
+            price: section.apt,
+          };
+        }),
+      );
+    });
+    setSeats(generatedSeats);
+  }, []);
+
+  // toggle seat
+  const toggleSeat = (sectionName: string, seatId: string) => {
+    const seat = seats[sectionName].find((s) => s.id === seatId);
+    if (!seat || seat.status === "sold") return;
+
+    const alreadySelected = selectedSeats.find((s) => s.id === seatId);
+
+    if (alreadySelected) {
+      setSeats((prev) => ({
+        ...prev,
+        [sectionName]: prev[sectionName].map((s) => (s.id === seatId ? { ...s, status: "available" } : s)),
+      }));
+      setSelectedSeats((prev) => prev.filter((s) => s.id !== seatId));
+    } else {
+      if (selectedSeats.length >= seatLimit) {
+        setShowAlert(`You can only select ${seatLimit} seat(s) 🚫`);
+        setTimeout(() => setShowAlert(null), 2000);
+        return;
+      }
+      setSeats((prev) => ({
+        ...prev,
+        [sectionName]: prev[sectionName].map((s) => (s.id === seatId ? { ...s, status: "selected" } : s)),
+      }));
+      setSelectedSeats((prev) => [...prev, { ...seat, status: "selected" }]);
+    }
+  };
+
+  const totalApt = selectedSeats.reduce((sum, s) => sum + s.price, 0);
+
+  const handlePayAndContinue = () => {
+    if (selectedSeats.length === 0) {
+      setShowAlert("Please select at least 1 seat 🚨");
+      setTimeout(() => setShowAlert(null), 2000);
+      return;
+    }
+    const seatsWithPrice = selectedSeats.map((seat) => ({
+      section: seat.section,
+      id: seat.id,
+      price: seat.price,
+    }));
+    const data = { seats: seatsWithPrice, totalApt };
+    sessionStorage.setItem("bookingData", JSON.stringify(data));
+    router.push("/userdetails");
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100">
+      <Navbarmovie />
+
+      {/* Show Popup First */}
+      <AnimatePresence>
+        {showPopup && (
+          <SeatPopup onClose={() => setShowPopup(false)} setSeatLimit={setSeatLimit} seatLimit={seatLimit} />
+        )}
+      </AnimatePresence>
+
+      {/* Seat Layout */}
+      {!showPopup && (
+        <div className="max-w-6xl mx-auto p-4 pt-28">
+          {/* Movie Screen (only once, before SECOND CLASS) */}
+          <div className="mb-6 flex justify-center">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/7994/7994691.png"
+              alt="Movie Screen"
+              className="h-12 object-contain"
+            />
+          </div>
+
+          {sections.map((section) => (
+            <div key={section.name} className="mb-8">
+              <h2 className="text-center text-sm text-gray-700 mb-2">
+                {section.name} • {section.apt} apt
+              </h2>
+              <div className="space-y-2">
+                {section.rows.map((row) => (
+                  <div key={row} className="flex items-center justify-center gap-3">
+                    <span className="w-6 text-xs text-gray-600">{row}</span>
+                    <div className="flex gap-6">
+                      <div className="flex gap-1">
+                        {seats[section.name]
+                          ?.filter((s) => s.id.startsWith(row))
+                          .slice(0, 9)
+                          .map((seat) => (
+                            <button
+                              key={seat.id}
+                              onClick={() => toggleSeat(section.name, seat.id)}
+                              className={`w-7 h-7 rounded-sm text-[10px] flex items-center justify-center border ${
+                                seat.status === "available"
+                                  ? "bg-white border-green-400 text-green-600 hover:bg-green-100"
+                                  : seat.status === "selected"
+                                    ? "bg-green-500 text-white"
+                                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                              }`}
+                            >
+                              {seat.id.replace(row, "")}
+                            </button>
+                          ))}
+                      </div>
+                      <div className="flex gap-1">
+                        {seats[section.name]
+                          ?.filter((s) => s.id.startsWith(row))
+                          .slice(9)
+                          .map((seat) => (
+                            <button
+                              key={seat.id}
+                              onClick={() => toggleSeat(section.name, seat.id)}
+                              className={`w-7 h-7 rounded-sm text-[10px] flex items-center justify-center border ${
+                                seat.status === "available"
+                                  ? "bg-white border-green-400 text-green-600 hover:bg-green-100"
+                                  : seat.status === "selected"
+                                    ? "bg-green-500 text-white"
+                                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                              }`}
+                            >
+                              {seat.id.replace(row, "")}
+                            </button>
+                          ))}
+                      </div>
+                    </div>
+                    <span className="w-6 text-xs text-gray-600">{row}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          {/* Legend */}
+          <div className="flex justify-center gap-6 mt-6 mb-4 text-sm">
+            <div className="flex items-center gap-2">
+              <span className="w-5 h-5 bg-white border-green-400 border"></span> Available
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-5 h-5 bg-green-500"></span> Selected
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-5 h-5 bg-gray-300"></span> Sold
+            </div>
+          </div>
+
+          {/* Edit Ticket Button */}
+          <div className="fixed bottom-1 left- -translate-x-1/2 z-40">
+            <button
+              onClick={() => setShowPopup(true)}
+              className="text-sm left-1/2  text-black  shadow px-4 py-2 rounded-lg border"
+            >
+              Edit Ticket
+            </button>
+          </div>
+
+          {/* Continue Button */}
+          <div className="mt-6 mb-10">
+            <button
+              onClick={handlePayAndContinue}
+              className="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-lg text-lg font-semibold"
+            >
+              Pay & Continue
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Alert */}
+      <AnimatePresence>
+        {showAlert && (
+          <motion.div
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 50, opacity: 0 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-lg shadow"
+          >
+            {showAlert}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
