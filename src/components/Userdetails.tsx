@@ -1,14 +1,20 @@
-"use client";
+'use client';
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Navbarmovie from "./Navbarmovie";
+
+// Updated interface to reflect seat data
+interface Seat {
+  id: string;
+  section: string; // e.g., 'Premium BALCONY'
+  price: number;
+}
 
 interface BookingData {
-  movie: string;
-  theater: string;
-  date: string;
-  time: string;
-  language: string;
+  seats: Seat[];
+  totalApt: number;
+  // It can also include other data like movie name, etc.
+  movie?: string;
+  rating?: string;
 }
 
 export default function UserDetails() {
@@ -24,17 +30,19 @@ export default function UserDetails() {
   // Load booking data from sessionStorage
   useEffect(() => {
     const data = sessionStorage.getItem("bookingData");
-    if (data) setBookingData(JSON.parse(data));
+    if (data) {
+      setBookingData(JSON.parse(data));
+    }
   }, []);
 
   const connectWallet = async () => {
-    if (!window.aptos) {
+    if (!(window as any).aptos) {
       alert("❌ Petra Wallet not found! Please install it.");
       return;
     }
     try {
-      await window.aptos.connect();
-      const account = await window.aptos.account();
+      await (window as any).aptos.connect();
+      const account = await (window as any).aptos.account();
       setWalletAddress(account.address);
       setWalletConnected(true);
       alert("✅ Wallet connected!");
@@ -46,7 +54,7 @@ export default function UserDetails() {
 
   const disconnectWallet = async () => {
     try {
-      await window.aptos.disconnect();
+      await (window as any).aptos.disconnect();
       setWalletAddress("");
       setWalletConnected(false);
       alert("🔴 Wallet disconnected!");
@@ -85,14 +93,72 @@ export default function UserDetails() {
     );
   }
 
+  // Helper to render the booking details
+const renderBookingDetails = () => (
+  <div className="relative mt-6 w-full max-w-md mx-auto bg-white text-black rounded-2xl border border-black overflow-hidden">
+    {/* Header */}
+    <div className="px-6 py-3 text-center border-b border-dashed border-black">
+      <h2 className="text-xl font-bold tracking-wide">Your Ticket</h2>
+    </div>
+
+    {/* Content */}
+    <div className="px-6 py-4">
+      {bookingData?.movie && (
+        <p className="text-lg font-semibold">
+          Movie: <span className="font-normal">{bookingData.movie}</span>
+        </p>
+      )}
+
+      <hr className="my-3 border-t border-dashed border-black" />
+
+      {/* Seats */}
+      <div className="space-y-3">
+        {bookingData?.seats.map((seat) => (
+          <div key={seat.id} className="p-3 rounded-lg border border-black">
+            <p>
+              <span className="font-semibold">Seat number:</span> {seat.id}
+            </p>
+            <p>
+              <span className="font-semibold">Ticket info:</span> {seat.section}
+            </p>
+            <p>
+              <span className="font-semibold">Price:</span> {seat.price.toFixed(2)} apt
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <hr className="my-3 border-t border-dashed border-black" />
+
+      {/* Total */}
+      <div className="flex justify-between items-center">
+        <p className="text-lg font-bold">Total price</p>
+        <p className="text-xl font-extrabold">{bookingData?.totalApt.toFixed(2)} apt</p>
+      </div>
+    </div>
+
+    {/* Footer */}
+    <div className="px-6 py-2 text-center text-sm border-t border-dashed border-black">
+      Show this ticket at entry
+    </div>
+
+    {/* Ticket side cutouts */}
+    <div className="absolute top-1/2 -left-3 w-6 h-6 bg-white rounded-full border border-black"></div>
+    <div className="absolute top-1/2 -right-3 w-6 h-6 bg-white rounded-full border border-black"></div>
+  </div>
+);
+
+
+
+
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100 p-4">
       {!submitted ? (
         <form onSubmit={handleSubmit} className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6">
           <h2 className="text-xl font-semibold text-center mb-4">Confirm Your Booking</h2>
 
-          {/* Navbar showing movie + date/time */}
-          <Navbarmovie bookingData={bookingData!} />
+          {/* Display Booking Details */}
+          {bookingData && renderBookingDetails()}
 
           {/* Wallet */}
           {!walletConnected ? (
@@ -166,21 +232,13 @@ export default function UserDetails() {
           </button>
         </form>
       ) : (
+        
         <div className="w-full max-w-3xl bg-gray-50 rounded-2xl p-4 shadow-md mt-4">
           <h2 className="text-xl font-semibold mb-2">Booking Confirmed!</h2>
           <p className="text-gray-700 mb-4">Thanks! Your booking has been saved locally.</p>
-          {bookingData && (
-            <div className="mt-4 bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded-lg w-full max-w-md">
-              <p className="font-bold text-lg">Your Selected Show</p>
-              <p className="mt-1">Movie: {bookingData.movie}</p>
-              <p>Theater: {bookingData.theater}</p>
-              <p className="text-red-600 font-semibold">
-                Date: {bookingData.date} • Time: {bookingData.time}
-              </p>
-              <p>Language: {bookingData.language}</p>
-            </div>
-          )}
-
+         
+          
+          {bookingData && renderBookingDetails()}
 
           <div className="bg-white rounded-xl p-4 border shadow-sm mt-4">
             <h2 className="text-lg font-semibold mb-3">Your Contact Details</h2>
