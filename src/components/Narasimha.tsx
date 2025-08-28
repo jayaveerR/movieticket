@@ -15,7 +15,7 @@ export default function Narasimha() {
   }, []);
 
   const handleBook = () => {
-    router.push("/mouglicomponent");
+    router.push("/narasimhacomponents");
   };
 
   const handleRate = () => {
