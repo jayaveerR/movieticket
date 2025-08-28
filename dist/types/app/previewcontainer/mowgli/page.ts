@@ -1,4 +1,4 @@
-// File: C:\Users\raman\Music\movieticket\movie\src\app\previewcontainer\mowgli\page.tsx
+// File: C:\Users\raman\Music\BOOKMYSHOW\movieticket\src\app\previewcontainer\mowgli\page.tsx
 import * as entry from '../../../../../src/app/previewcontainer/mowgli/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

@@ -1,9 +1,10 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/previewcontainer/mowgli/page": "app/previewcontainer/mowgli/page.js",
-  "/seats/page": "app/seats/page.js",
+  "/narasimha/page": "app/narasimha/page.js",
+  "/userdetails/page": "app/userdetails/page.js",
   "/previewcontainer/page": "app/previewcontainer/page.js",
+  "/seats/page": "app/seats/page.js",
   "/mouglicomponent/page": "app/mouglicomponent/page.js",
   "/manifest.json/route": "app/manifest.json/route.js",
-  "/userdetails/page": "app/userdetails/page.js"
+  "/previewcontainer/mowgli/page": "app/previewcontainer/mowgli/page.js"
 }

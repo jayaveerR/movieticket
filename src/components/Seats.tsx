@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Navbarmovie from "./Navbarmovie";
 
+
 // ================= SECTION DATA =================
 interface Section {
   name: string;
@@ -127,8 +128,9 @@ export default function BookingFlow() {
   const [showAlert, setShowAlert] = useState<string | null>(null);
   const [showPopup, setShowPopup] = useState(true);
   const [seatLimit, setSeatLimit] = useState(1);
+  const [selectedMovie, setSelectedMovie] = useState<{ name: string; rating: string } | null>(null);
 
-  // init seats with random sold
+  // init seats and load movie data
   useEffect(() => {
     const generatedSeats: Record<string, Seat[]> = {};
     sections.forEach((section) => {
@@ -142,10 +144,18 @@ export default function BookingFlow() {
             section: section.name,
             price: section.apt,
           };
-        }),
+        })
       );
     });
     setSeats(generatedSeats);
+
+    const dataString = sessionStorage.getItem("bookingData");
+    if (dataString) {
+      const bookingData = JSON.parse(dataString);
+      if (bookingData.movie && bookingData.rating) {
+        setSelectedMovie({ name: bookingData.movie, rating: bookingData.rating });
+      }
+    }
   }, []);
 
   // toggle seat
@@ -188,7 +198,8 @@ export default function BookingFlow() {
       id: seat.id,
       price: seat.price,
     }));
-    const data = { seats: seatsWithPrice, totalApt };
+    const existingData = JSON.parse(sessionStorage.getItem("bookingData") || "{}");
+    const data = { ...existingData, seats: seatsWithPrice, totalApt };
     sessionStorage.setItem("bookingData", JSON.stringify(data));
     router.push("/userdetails");
   };

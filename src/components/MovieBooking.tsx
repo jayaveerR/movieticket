@@ -35,13 +35,15 @@ export default function MovieBooking() {
 
     // Save to sessionStorage for Navbar
     const bookingInfo = {
-      movie: "Mougil",
+      movie: "Mowgli",
       theater,
       date: selectedDate,
       time,
       language: "Telugu • 2D",
     };
     sessionStorage.setItem("bookingData", JSON.stringify(bookingInfo));
+    
+  
 
     if (theater === "PVR: Ripples, Vijayawada" && time === "01:40 PM") {
       setShowModal(true);

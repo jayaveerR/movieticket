@@ -4,7 +4,7 @@ import { Star, Calendar, Clock, AlertCircle, Play } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Homenav from "./Homenav";
-export default function Movies() {
+export default function Mowgli() {
   const [rating] = useState("7.7/10 (192K Votes)");
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
@@ -33,6 +33,7 @@ export default function Movies() {
     <>
       {/* Navbar */}
       <Homenav />
+      
 
       {/* Content with Background */}
       <div

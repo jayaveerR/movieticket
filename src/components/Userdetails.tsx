@@ -181,7 +181,6 @@ export default function UserDetails() {
             </div>
           )}
 
-          <Navbarmovie bookingData={bookingData!} />
 
           <div className="bg-white rounded-xl p-4 border shadow-sm mt-4">
             <h2 className="text-lg font-semibold mb-3">Your Contact Details</h2>

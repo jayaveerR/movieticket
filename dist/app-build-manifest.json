@@ -16,6 +16,11 @@
       "static/chunks/main-app.js",
       "static/chunks/app/previewcontainer/page.js"
     ],
+    "/narasimha/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/narasimha/page.js"
+    ],
     "/previewcontainer/mowgli/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -35,11 +40,6 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/userdetails/page.js"
-    ],
-    "/previewcontainer/narasimha/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/previewcontainer/narasimha/page.js"
     ],
     "/_not-found/page": [
       "static/chunks/webpack.js",
