@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { Film, Languages, MapPin, Calendar, Clock } from "lucide-react";
 
 interface BookingData {
   movie: string;
@@ -24,16 +25,40 @@ export default function Navbarmovie({ bookingData: propData }: { bookingData?: B
   if (!booking) return null;
 
   return (
-    <div className="p-4 bg-white shadow-md flex flex-col md:flex-row md:items-center md:justify-between">
-      <div>
-        <h2 className="font-bold text-lg">{booking.movie}</h2>
-        <p className="text-sm text-gray-600">{booking.language}</p>
+    <div className="p-4 bg-white shadow-md rounded-xl flex flex-col gap-3">
+      {/* 🎬 Movie */}
+      <div className="flex items-center gap-2 text-gray-800">
+        <Film className="w-5 h-5 text-red-500" />
+        <span className="font-semibold">Movie:</span>
+        <span>{booking.movie}</span>
       </div>
-      <div className="text-sm text-gray-700 mt-2 md:mt-0">
-        <p>{booking.theater}</p>
-        <p>
-          {booking.date} • {booking.time}
-        </p>
+
+      {/* 🌐 Language */}
+      <div className="flex items-center gap-2 text-gray-800">
+        <Languages className="w-5 h-5 text-blue-500" />
+        <span className="font-semibold">Language:</span>
+        <span>{booking.language}</span>
+      </div>
+
+      {/* 📍 Location */}
+      <div className="flex items-center gap-2 text-gray-800">
+        <MapPin className="w-5 h-5 text-green-500" />
+        <span className="font-semibold">Location:</span>
+        <span>{booking.theater}</span>
+      </div>
+
+      {/* 📅 Date */}
+      <div className="flex items-center gap-2 text-gray-800">
+        <Calendar className="w-5 h-5 text-purple-500" />
+        <span className="font-semibold">Date:</span>
+        <span>{booking.date}</span>
+      </div>
+
+      {/* ⏰ Time */}
+      <div className="flex items-center gap-2 text-gray-800">
+        <Clock className="w-5 h-5 text-orange-500" />
+        <span className="font-semibold">Time:</span>
+        <span>{booking.time}</span>
       </div>
     </div>
   );

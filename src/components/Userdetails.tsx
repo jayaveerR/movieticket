@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Navbarmovie from "./Navbarmovie";
 
 // Updated interface to reflect seat data
 interface Seat {
@@ -95,7 +96,7 @@ export default function UserDetails() {
 
   // Helper to render the booking details
 const renderBookingDetails = () => (
-  <div className="relative mt-6 w-full max-w-md mx-auto bg-white text-black rounded-2xl border border-black overflow-hidden">
+  <div className="">
     {/* Header */}
     <div className="px-6 py-3 text-center border-b border-dashed border-black">
       <h2 className="text-xl font-bold tracking-wide">Your Ticket</h2>
@@ -103,30 +104,49 @@ const renderBookingDetails = () => (
 
     {/* Content */}
     <div className="px-6 py-4">
-      {bookingData?.movie && (
-        <p className="text-lg font-semibold">
-          Movie: <span className="font-normal">{bookingData.movie}</span>
+      
+        <p className="">
         </p>
-      )}
+      
 
-      <hr className="my-3 border-t border-dashed border-black" />
 
-      {/* Seats */}
-      <div className="space-y-3">
-        {bookingData?.seats.map((seat) => (
-          <div key={seat.id} className="p-3 rounded-lg border border-black">
-            <p>
-              <span className="font-semibold">Seat number:</span> {seat.id}
-            </p>
-            <p>
-              <span className="font-semibold">Ticket info:</span> {seat.section}
-            </p>
-            <p>
-              <span className="font-semibold">Price:</span> {seat.price.toFixed(2)} apt
-            </p>
-          </div>
-        ))}
+
+     {/* 🎟️ Seats */}
+<div className="space-y-3">
+  {bookingData?.seats.map((seat) => (
+    <div
+      key={seat.id}
+      className="p-3 rounded-lg border border-gray-300 shadow-sm bg-white"
+    >
+      {/* Seat number */}
+      <div className="flex items-center gap-2 text-gray-800 mb-1">
+        <span className="text-red-500">
+          🎟️
+        </span>
+        <span className="font-semibold">Seat number:</span>
+        <span>{seat.id}</span>
       </div>
+
+      {/* Ticket info */}
+      <div className="flex items-center gap-2 text-gray-800 mb-1">
+        <span className="text-blue-500">
+          🎫
+        </span>
+        <span className="font-semibold">Ticket info:</span>
+        <span>{seat.section}</span>
+      </div>
+
+      {/* Price */}
+      <div className="flex items-center gap-2 text-gray-800">
+        <span className="text-green-500">
+          💰
+        </span>
+        <span className="font-semibold">Price:</span>
+        <span>{seat.price.toFixed(2)} apt</span>
+      </div>
+    </div>
+  ))}
+</div>
 
       <hr className="my-3 border-t border-dashed border-black" />
 
@@ -232,26 +252,29 @@ const renderBookingDetails = () => (
           </button>
         </form>
       ) : (
-        
+        <>
         <div className="w-full max-w-3xl bg-gray-50 rounded-2xl p-4 shadow-md mt-4">
           <h2 className="text-xl font-semibold mb-2">Booking Confirmed!</h2>
           <p className="text-gray-700 mb-4">Thanks! Your booking has been saved locally.</p>
          
+          <Navbarmovie />
           
-          {bookingData && renderBookingDetails()}
 
           <div className="bg-white rounded-xl p-4 border shadow-sm mt-4">
             <h2 className="text-lg font-semibold mb-3">Your Contact Details</h2>
-            <p>Wallet: {walletAddress}</p>
+            <p>Wallet Adress: {walletAddress}</p>
             <p>Email: {email}</p>
-            <p>Phone: {phone}</p>
+            <p>Phone Number: {phone}</p>
             <p>State: {state}</p>
           </div>
 
           <button onClick={() => setSubmitted(false)} className="mt-4 text-blue-500 hover:underline">
             ✏️ Edit
           </button>
+                    {bookingData && renderBookingDetails()}
+
         </div>
+        </>
       )}
     </div>
   );

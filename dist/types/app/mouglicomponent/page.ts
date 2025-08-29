@@ -1,4 +1,4 @@
-// File: C:\Users\raman\Music\BOOKMYSHOW\movieticket\src\app\mouglicomponent\page.tsx
+// File: C:\Users\raman\OneDrive\Documents\movieticket\src\app\mouglicomponent\page.tsx
 import * as entry from '../../../../src/app/mouglicomponent/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
