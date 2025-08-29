@@ -29,30 +29,44 @@ module movie_addr::bookmyshow {
     }
 
     /// Initialize collection for the account (call this once per account)
+    /// Original function - kept for backward compatibility
     public entry fun init_collection(user: &signer) {
+        initialize_collection_internal(user);
+    }
+
+    /// Initialize collection for the account (call this once per account)
+    /// New function name to match frontend call
+    public entry fun initialize_collection(user: &signer) {
+        initialize_collection_internal(user);
+    }
+
+    /// Internal helper function for collection initialization
+    fun initialize_collection_internal(user: &signer) {
         let collection_name = string::utf8(b"BookMyShow Tickets");
         let collection_description = string::utf8(b"Movie ticket NFTs from BookMyShow");
         let collection_uri = string::utf8(b"https://example.com/collection.png");
         
-        // Only create if it doesn't exist
-        if (!token::check_collection_exists(signer::address_of(user), collection_name)) {
-            let mutate_setting = vector::empty<bool>();
-            vector::push_back(&mut mutate_setting, false);
-            vector::push_back(&mut mutate_setting, false);
-            vector::push_back(&mut mutate_setting, false);
-            vector::push_back(&mut mutate_setting, false);
-            vector::push_back(&mut mutate_setting, false);
-            vector::push_back(&mut mutate_setting, false);
-
-            token::create_collection_script(
-                user,
-                collection_name,
-                collection_description,
-                collection_uri,
-                0,
-                mutate_setting
-            );
+        // Check if collection already exists, if so, do nothing
+        if (token::check_collection_exists(signer::address_of(user), collection_name)) {
+            return
         };
+        
+        let mutate_setting = vector::empty<bool>();
+        vector::push_back(&mut mutate_setting, false); // description
+        vector::push_back(&mut mutate_setting, false); // royalty
+        vector::push_back(&mut mutate_setting, false); // uri
+        vector::push_back(&mut mutate_setting, false); // token maximum
+        vector::push_back(&mut mutate_setting, false); // token properties
+        vector::push_back(&mut mutate_setting, false); // token property values
+
+        token::create_collection_script(
+            user,
+            collection_name,
+            collection_description,
+            collection_uri,
+            0, // maximum supply (0 = unlimited)
+            mutate_setting
+        );
     }
 
     /// Book tickets + mint NFT
@@ -110,8 +124,12 @@ module movie_addr::bookmyshow {
             );
         };
 
-        // Mint NFT ticket
-        let token_name = string::utf8(b"Movie Ticket");
+        // Mint NFT ticket with unique name based on movie and timestamp
+        let token_name_bytes = b"Ticket-";
+        let movie_bytes = *string::bytes(&movie);
+        vector::append(&mut token_name_bytes, movie_bytes);
+        let token_name = string::utf8(token_name_bytes);
+        
         let description = string::utf8(b"Your booked movie ticket as NFT");
         let uri = string::utf8(b"https://example.com/ticket.png");
         
@@ -167,5 +185,12 @@ module movie_addr::bookmyshow {
         } else {
             0
         }
+    }
+
+    #[view]
+    /// View function to check if collection exists
+    public fun collection_exists(creator: address): bool {
+        let collection_name = string::utf8(b"BookMyShow Tickets");
+        token::check_collection_exists(creator, collection_name)
     }
 }

@@ -1,11 +1,9 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/paradisecomponent/page": "app/paradisecomponent/page.js",
-  "/userdetails/page": "app/userdetails/page.js",
   "/seats/page": "app/seats/page.js",
+  "/narasimhacomponents/page": "app/narasimhacomponents/page.js",
   "/page": "app/page.js",
+  "/userdetails/page": "app/userdetails/page.js",
   "/manifest.json/route": "app/manifest.json/route.js",
-  "/previewcontainer/page": "app/previewcontainer/page.js",
-  "/previewcontainer/mowgli/page": "app/previewcontainer/mowgli/page.js",
-  "/mouglicomponent/page": "app/mouglicomponent/page.js"
+  "/previewcontainer/page": "app/previewcontainer/page.js"
 }
