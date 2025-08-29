@@ -31,7 +31,7 @@ export default function MovieGrid() {
         router.push("/previewcontainer/narasimha");
         break;
       case 3:
-        router.push("/previewcontainer/movies/paradise");
+        router.push("/previewcontainer/paradise");
         break;
       case 4:
         router.push("/previewcontainer/movies/ramayana");

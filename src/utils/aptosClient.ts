@@ -1,9 +1,12 @@
-import { APTOS_API_KEY, NETWORK } from "@/constants";
-import { Aptos, AptosConfig } from "@aptos-labs/ts-sdk";
+import { Aptos, AptosConfig, Network } from "@aptos-labs/ts-sdk";
 
-const aptos = new Aptos(new AptosConfig({ network: NETWORK, clientConfig: { API_KEY: APTOS_API_KEY } }));
+const network =
+  process.env.NEXT_PUBLIC_APP_NETWORK === "mainnet"
+    ? Network.MAINNET
+    : Network.TESTNET;
 
-// Reuse same Aptos instance to utilize cookie based sticky routing
-export function aptosClient() {
-  return aptos;
-}
+const config = new AptosConfig({
+  network,
+});
+
+export const aptosClient = new Aptos(config);

@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import Navbarmovie from "./Navbarmovie";
-
+import HomeNav from "./Homenav";
 
 // ================= SECTION DATA =================
 interface Section {
@@ -206,7 +205,7 @@ export default function BookingFlow() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Navbarmovie />
+      <HomeNav />
 
       {/* Show Popup First */}
       <AnimatePresence>
